@@ -4,33 +4,32 @@ import Waiter from './Components/Waiter';
 const App = () => {
 
   const [orders, setOrders] = useState([]);
-  const tables = [1, 2, 3]; // Replace this with the actual table data
 
   useEffect(() => {
-    // Fetch orders from local storage when the component mounts
-    const storedOrders = JSON.parse(localStorage.getItem('orders')) || [];
-    setOrders(storedOrders);
+    const fetchedOrders = JSON.parse(localStorage.getItem('orders')) || [];
+    setOrders(fetchedOrders);
   }, []);
 
-  const handleAddOrder = (orderData) => {
-    const newOrder = { ...orderData };
-    setOrders((prevOrders) => [...prevOrders, newOrder]);
-    localStorage.setItem('orders', JSON.stringify([...orders, newOrder]));
+  useEffect(() => {
+    localStorage.setItem('orders', JSON.stringify(orders));
+  }, [orders]);
+
+  const updateOrders = (callback) => {
+    setOrders(callback);
   };
 
-  const handleDeleteOrder = (orderId) => {
-    const updatedOrders = orders.filter((order) => order.orderId !== orderId);
+  const deleteOrder = (order) => {
+    const updatedOrders = orders.filter((o) => o !== order);
     setOrders(updatedOrders);
-    localStorage.setItem('orders', JSON.stringify(updatedOrders));
   };
 
   return (
     <div>
-      <h1>Order Management</h1>
-      <Waiter tables={tables} onAddOrder={handleAddOrder} />
-      <Orders orders={orders} onDeleteOrder={handleDeleteOrder} />
+      <Waiter updateOrders={updateOrders} />
+      <hr />
+      <Orders orders={orders} deleteOrder={deleteOrder} />
     </div>
   );
-};
+}
 
 export default App
