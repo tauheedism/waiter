@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React ,{useState,useEffect} from 'react'
+import Orders from './Components/Orders';
+import Waiter from './Components/Waiter';
+const App = () => {
 
-function App() {
+  const [orders, setOrders] = useState([]);
+  const tables=[1,2,3]
+  useEffect(() => {
+    const savedOrders = JSON.parse(localStorage.getItem('orders')) || [];
+    setOrders(savedOrders);
+  }, []);
+
+  const handleAddOrder=(orderData)=>{
+    const newOrder ={...orderData};
+    setOrders((prevOrders)=>[...prevOrders,newOrder])
+  }
+
+  const handleDeleteOrder = (orderId) => {
+    const updatedOrders = orders.filter((order) => order.orderId !== orderId);
+    setOrders(updatedOrders);
+    localStorage.setItem('orders', JSON.stringify(updatedOrders));
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <React.Fragment>
+      <Waiter tables={tables} onAddOrder={handleAddOrder} />
+      <Orders orders={orders} onDeleteOrder={handleDeleteOrder} />
+    </React.Fragment>
+  )
 }
 
-export default App;
+export default App
