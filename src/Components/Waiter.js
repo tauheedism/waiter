@@ -1,74 +1,63 @@
-import React , {useState} from "react";
+import React, { useState } from "react";
 
+const OrderForm = ({ tables, onAddOrder }) => {
+  const [orderId, setOrderId] = useState("");
+  const [dishPrice, setDishPrice] = useState("");
+  const [selectedDish, setSelectedDish] = useState("");
+  const [selectedTable, setSelectedTable] = useState("");
 
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    const orderData = {
+      orderId,
+      dishPrice,
+      selectedDish,
+      selectedTable,
+    };
+    onAddOrder(orderData);
+    setOrderId("");
+    setDishPrice("");
+    setSelectedDish("");
+    setSelectedTable("");
+  };
 
-const Waiter = () => {
-    const [orderId,setOrderId]=useState('')
-    const [dishName,setDish]=useState('')
-    const [dishPrice,setPrice]=useState('')
-    const [table,setTable]=useState('')
-
-    // const handleSubmit=()=>{
-    //     const order={
-    //         orderId,
-    //         dishName,
-    //         dishPrice,
-    //         table
-    //     }
-    // }
-
-    const handlerForm=(e)=>{
-        e.preventDefault();
-        const order={orderId,dishName,dishPrice,table}
-        const tableOrders=JSON.parse(localStorage.getItem('orders'))||[];
-        tableOrders.push(order);
-        localStorage.setItem('orders',JSON.stringify(tableOrders))
-        setOrderId('');
-        setDish('');
-        setPrice('');
-        setTable('')
-    }
   return (
-    <React.Fragment>
-      <form onSubmit={handlerForm}>
-        <label htmlFor="">
-          Choose a unique id:
-          <input 
-          type="number" 
-          name="orderId"
-          value={orderId}
-          onChange={(e)=>setOrderId(e.target.value)} />
-        </label>
-        <label htmlFor="">
-          Choose price:
-          <input 
-          type="text"
-          name="dishPrice"
-          value={dishPrice}
-          onChange={(e)=>setPrice(e.target.value)}
-          
-          />
-        </label>
-        <label htmlFor="">
-          Choose dish:
-          <input type="text"
-          name="dishName" 
-          value={dishName}
-          onChange={(e)=>setDish(e.target.value)}/>
-        </label>
-        <label htmlFor="">
-          Choose table: 
-          <select name="table" value={table} onChange={(e)=>setTable(e.target.value)}>
-            <option value="">Select Table</option>
-            <option value="Table 1">Table 1</option>
-            <option value="Table 2">Table 2</option>
-            <option value="Table 3">Table 3 </option>
-          </select>
-        </label>
-        <button type="submit">Add to table</button>
-      </form>
-    </React.Fragment>
+    <form onSubmit={handleFormSubmit}>
+      <input
+        type="text"
+        placeholder="Order ID"
+        value={orderId}
+        onChange={(e) => setOrderId(e.target.value)}
+      />
+      <input
+        type="number"
+        placeholder="Dish Price"
+        value={dishPrice}
+        onChange={(e) => setDishPrice(e.target.value)}
+      />
+      <select
+        value={selectedDish}
+        onChange={(e) => setSelectedDish(e.target.value)}
+      >
+        <option value="">Choose a Dish</option>
+        <option value="Dish 1">Dish 1</option>
+        <option value="Dish 2">Dish 2</option>
+        <option value="Dish 3">Dish 3</option>
+      </select>
+      <select
+        value={selectedTable}
+        onChange={(e) => setSelectedTable(e.target.value)}
+      >
+        <option value="">Choose a Table</option>
+        {tables.map((table) => (
+          <option key={table} value={table}>
+            Table {table}
+          </option>
+        ))}
+      </select>
+      <button type="submit">Submit Order</button>
+    </form>
   );
 };
 
-export default Waiter;
+export default OrderForm;
